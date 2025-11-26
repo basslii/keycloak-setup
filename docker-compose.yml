@@ -1,0 +1,56 @@
+
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4.0
+    container_name: keycloak-local
+    ports:
+      - "9090:8080"
+    environment:
+      # ---------- Admin credentials ----------
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+      # ---------- Database ----------
+      # KC_DB_URL: jdbc:postgresql://postgres-local-db:5432/keycloak_db
+        # ---------- Database ----------
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres-local-db   # ✅ connect to your container's name or server IP
+      KC_DB_URL_PORT: 5432
+      KC_DB_URL_DATABASE: keycloak_db        # ✅ your Keycloak database
+      KC_DB_SCHEMA: kc_schema                # ✅ or 'public' if you prefer default
+      KC_DB_USERNAME: app_keycloak
+      KC_DB_PASSWORD: appkeycloak123
+      KC_DB_POOL_SIZE: 10
+
+
+      # ---------- Hostname & network ----------
+      # KC_HOSTNAME: localhost
+      # KC_HTTP_ENABLED: true
+
+      # ---------- Features ----------
+      # KC_FEATURES: "scripts,authorization,token-exchange"
+
+      # ---------- Logging ----------
+      # KC_LOG_LEVEL: "trace,org.keycloak:debug,org.keycloak.events:debug,org.keycloak.services:debug,org.infinispan:debug,org.hibernate.SQL:debug,org.hibernate.type.descriptor.sql:trace"
+      KC_LOG_LEVEL: "DEBUG,org.hibernate.SQL:DEBUG"
+
+      # ---------- Health & Metrics ----------
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+
+    command: start-dev
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+      - ./themes:/opt/keycloak/themes
+      - ./extensions:/opt/keycloak/providers
+    networks:
+      - keycloak-net
+    restart: unless-stopped
+
+volumes:
+  keycloak-data:
+
+networks:
+  keycloak-net:
+    external: true
