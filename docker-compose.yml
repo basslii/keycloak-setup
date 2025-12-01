@@ -39,7 +39,10 @@ services:
       KC_METRICS_ENABLED: true
       KC_HEALTH_ENABLED: true
 
-    command: start-dev
+    command:
+      - start-dev
+      - --spi-theme-cache-themes=false
+      - --spi-theme-cache-templates=false
     volumes:
       - keycloak-data:/opt/keycloak/data
       - ./themes:/opt/keycloak/themes
