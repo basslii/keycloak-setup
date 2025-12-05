@@ -3,7 +3,7 @@
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.4.0
-    container_name: keycloak-local
+    container_name: keycloak-springboot-multi-module
     ports:
       - "9090:8080"
     environment:
@@ -15,12 +15,12 @@ services:
       # KC_DB_URL: jdbc:postgresql://postgres-local-db:5432/keycloak_db
         # ---------- Database ----------
       KC_DB: postgres
-      KC_DB_URL_HOST: postgres-local-db   # ✅ connect to your container's name or server IP
-      KC_DB_URL_PORT: 5432
+      KC_DB_URL_HOST: springboot-multi-module-db   # ✅ connect to your container's name or server IP
+      KC_DB_URL_PORT: 5444
       KC_DB_URL_DATABASE: keycloak_db        # ✅ your Keycloak database
       KC_DB_SCHEMA: kc_schema                # ✅ or 'public' if you prefer default
       KC_DB_USERNAME: app_keycloak
-      KC_DB_PASSWORD: appkeycloak123
+      KC_DB_PASSWORD: mysecretpassword
       KC_DB_POOL_SIZE: 10
       KC_HOSTNAME: localhost
       KC_HTTP_ENABLED: true
@@ -52,6 +52,7 @@ services:
       - ./extensions:/opt/keycloak/providers
     networks:
       - keycloak-net
+      - postgresql-local-container_springboot-multi-module-database-net
     restart: unless-stopped
 
 volumes:
@@ -59,4 +60,6 @@ volumes:
 
 networks:
   keycloak-net:
+    driver: bridge
+  postgresql-local-container_springboot-multi-module-database-net:
     external: true
